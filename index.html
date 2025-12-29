@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<head>
+    <!-- Favicon พื้นฐาน -->
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    
+    <!-- สำหรับเบราว์เซอร์สมัยใหม่ -->
+    <link rel="icon" type="image/png" sizes="32x32" href="pf.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    
+    <!-- สำหรับ Apple devices -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    
+    <!-- สำหรับ Android -->
+    <link rel="manifest" href="/site.webmanifest">
+    
+    <!-- ชื่อเว็บไซต์ -->
+    <title>Peravit</title>
+    
+    <!-- สำหรับ Windows Metro -->
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>โปรไฟล์ส่วนตัว - Dark Theme</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 50%, #121212 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* เอฟเฟกต์พื้นหลัง */
+        .bg-effects {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-particle {
+            position: absolute;
+            background: rgba(100, 100, 100, 0.1);
+            border-radius: 50%;
+        }
+
+        /* ปุ่มสลับหน้าแบบพลิกกระดาษ */
+        .page-flip-container {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            z-index: 1000;
+        }
+
+        .page-flip-btn {
+            position: relative;
+            width: 120px;
+            height: 50px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .page-flip-btn:hover .flipper {
+            transform: rotateY(180deg);
+        }
+
+        .flipper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+        }
+
+        .flipper.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flip-front, .flip-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .flip-front {
+            background: linear-gradient(135deg, #2d2d2d, #1a1a1a);
+            color: #fff;
+            border: 2px solid #444;
+        }
+
+        .flip-front i {
+            margin-right: 8px;
+            color: #7289da;
+        }
+
+        .flip-back {
+            background: linear-gradient(135deg, #7289da, #5a6fb8);
+            color: white;
+            transform: rotateY(180deg);
+            border: 2px solid #5a6fb8;
+        }
+
+        .flip-back i {
+            margin-right: 8px;
+        }
+
+        /* เอฟเฟกต์เงาเมื่อ hover */
+        .page-flip-btn:hover .flip-front {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        /* หน้าเพิ่มเติม (ซ่อนอยู่) */
+        .additional-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0a0a, #1c1c1c);
+            z-index: 999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            transform: translateX(-100%);
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow-y: auto;
+        }
+
+        .additional-page.active {
+            display: flex;
+            transform: translateX(0);
+        }
+
+        .page-content {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(25, 25, 25, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(80, 80, 80, 0.3);
+            transform: scale(0.9);
+            opacity: 0;
+            transition: transform 0.6s 0.3s, opacity 0.6s 0.3s;
+        }
+
+        .additional-page.active .page-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .close-page-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(40, 40, 40, 0.8);
+            border: 2px solid #555;
+            color: #ddd;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .close-page-btn:hover {
+            background: rgba(60, 60, 60, 0.9);
+            transform: rotate(90deg);
+            border-color: #7289da;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-align: center;
+            background: linear-gradient(90deg, #7289da, #5a6fb8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 2px;
+        }
+
+        .page-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(35, 35, 35, 0.7);
+            border-radius: 15px;
+            border-left: 4px solid #7289da;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #ccc;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 10px;
+            color: #7289da;
+        }
+
+        .section-content {
+            color: #aaa;
+            line-height: 1.6;
+        }
+
+        /* คอนเทนเนอร์หลัก */
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(20, 20, 20, 0.85);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            border: 1px solid rgba(80, 80, 80, 0.2);
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
+            transition: transform 0.5s ease;
+        }
+
+        /* เมื่อเปิดหน้าเพิ่มเติม ให้เลื่อน container ไปทางขวา */
+        body.page-open .container {
+            transform: translateX(30px);
+        }
+
+        /* เฮดเดอร์ */
+        .header {
+            padding: 40px 30px 30px;
+            text-align: center;
+            background: linear-gradient(to right, rgba(30, 30, 30, 0.9), rgba(40, 40, 40, 0.9));
+            position: relative;
+        }
+
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #333;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .profile-img:hover {
+            transform: scale(1.05);
+            border-color: #555;
+        }
+
+        .name {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #aaa, #fff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .title {
+            font-size: 1.2rem;
+            color: #aaa;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+        }
+
+        /* ส่วนไอคอนโซเชียล */
+        .social-section {
+            padding: 30px;
+            text-align: center;
+            background: rgba(15, 15, 15, 0.8);
+        }
+
+        .social-title {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: #ccc;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 25px;
+        }
+
+        .icon-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #ddd;
+            transition: all 0.3s ease;
+            width: 100px;
+        }
+
+        .icon-link:hover {
+            transform: translateY(-10px);
+        }
+
+        .icon-circle {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            margin-bottom: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .facebook {
+            background: linear-gradient(135deg, #3b5998, #2d4373);
+        }
+
+        .instagram {
+            background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+        }
+
+        .discord {
+            background: linear-gradient(135deg, #7289da, #5a6fb8);
+        }
+
+        .steam {
+            background: linear-gradient(45deg, #000000, #030b30, #25F4EE);
+        }
+
+        .icon-name {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* ส่วนเพลง */
+        .music-section {
+            padding: 30px;
+            text-align: center;
+            background: rgba(25, 25, 25, 0.9);
+            border-top: 1px solid rgba(80, 80, 80, 0.3);
+        }
+
+        .music-title {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: #ccc;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .music-player {
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(40, 40, 40, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .music-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .album-cover {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            object-fit: cover;
+            margin-right: 20px;
+            border: 2px solid #444;
+        }
+
+        .track-info h3 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            text-align: left;
+        }
+
+        .track-info p {
+            color: #aaa;
+            text-align: left;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .control-btn {
+            background: #333;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            color: #ddd;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .control-btn:hover {
+            background: #444;
+            transform: scale(1.1);
+        }
+
+        .play-btn {
+            background: linear-gradient(135deg, #555, #777);
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: #333;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #666, #aaa);
+            border-radius: 4px;
+            transition: width 0.1s;
+        }
+
+        .time-info {
+            display: flex;
+            justify-content: space-between;
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .volume-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 15px;
+            gap: 10px;
+        }
+
+        .volume-slider {
+            width: 100px;
+            height: 5px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #333;
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #aaa;
+            cursor: pointer;
+        }
+
+        /* ฟุตเตอร์ */
+        .footer {
+            padding: 20px;
+            text-align: center;
+            color: #777;
+            font-size: 0.9rem;
+            background: rgba(10, 10, 10, 0.9);
+            border-top: 1px solid rgba(80, 80, 80, 0.3);
+        }
+
+        /* responsive */
+        @media (max-width: 768px) {
+            .page-flip-container {
+                top: 20px;
+                left: 20px;
+            }
+            
+            .page-flip-btn {
+                width: 100px;
+                height: 45px;
+            }
+            
+            .name {
+                font-size: 2rem;
+            }
+            
+            .social-icons {
+                gap: 15px;
+            }
+            
+            .icon-link {
+                width: 80px;
+            }
+            
+            .icon-circle {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-flip-container {
+                top: 15px;
+                left: 15px;
+            }
+            
+            .page-flip-btn {
+                width: 90px;
+                height: 40px;
+                font-size: 0.9rem;
+            }
+            
+            .header {
+                padding: 30px 20px 20px;
+            }
+            
+            .profile-img {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .social-icons {
+                gap: 10px;
+            }
+            
+            .icon-link {
+                width: 70px;
+            }
+            
+            .music-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .album-cover {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .track-info h3, .track-info p {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+            
+        <div class="bg-effects" id="bgEffects"></div>
+
+
+    <div class="page-flip-container">
+        <div class="page-flip-btn" id="pageFlipBtn">
+            <div class="flipper" id="flipper">
+                <div class="flip-front">
+                    <i class="fas fa-book"></i>
+                    หน้า 2
+                </div>
+                <div class="flip-back">
+                    <i class="fas fa-home"></i>
+                    กลับหน้าแรก
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="additional-page" id="additionalPage">
+        <button class="close-page-btn" id="closePageBtn">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="page-content">
+            <h2 class="page-title">ข้อมูลเพิ่มเติม</h2>
+
+            <div class="page-section">
+                <h3 class="section-title"><i class="fas fa-user-graduate"></i> งานดิเรก</h3>
+                <div class="section-content">
+                    <p>• ฟังเพลงที่ชอบ</p>
+                    <p>• เล่นเกม</p>
+                    <p>• เล่นดนตรี</p>
+                </div>
+            </div>
+
+            <div class="page-section">
+                <h3 class="section-title"><i class="fas fa-code"></i> กีฬา</h3>
+                <div class="section-content">
+                    <p>• ฟุตบอล</p>
+                    <p>• MotoGP</p>
+                    <p>• เดินทาง</p>
+                    <p>• ขับรถไปโรงเรียน555   </p>
+                </div>
+            </div>
+
+            <div class="page-section">
+                <h3 class="section-title"><i class="fas fa-gamepad"></i> ทักษะทางเทคนิค</h3>
+                <div class="section-content">
+                    <p>• เล่นดนตรี</p>
+                    <p>• สกิลการเล่นเกม</p>
+
+                </div>
+            </div>
+
+            <div class="page-section">
+                <h3 class="section-title"><i class="fas fa-bullseye"></i> เป้าหมาย</h3>
+                <div class="section-content">
+                    <p>• นักแข่งMotoGP</p>
+                    <p>• ประสบณ์ความสำเร็จ</p>
+                    <p>• ทำธุระกิจเป็นผู้ประกอบการ</p>
+                    <p>• ใช้ชีวิตอย่างมีความสุข</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Element สำหรับเล่นเพลง -->
+    <audio id="audioPlayer" preload="metadata">
+        <source src="Music1.mp3" type="audio/mpeg">
+        <source src="Music.ogg" type="audio/ogg">
+        Browser ของคุณไม่รองรับการเล่นเสียง
+    </audio>
+
+    <!-- คอนเทนเนอร์หลัก -->
+    <div class="container">
+        <!-- เฮดเดอร์และข้อมูลส่วนตัว -->
+        <div class="header">
+            <img src="pf1.png" alt="รูปโปรไฟล์" class="profile-img">
+            <h1 class="name">PERAVIT</h1>
+            <p class="title">นักดนตรี | นักเรียน | ผู้ชื่นชอบเกม</p>
+        </div>
+
+        <!-- ส่วนไอคอนโซเชียลมีเดีย -->
+        <div class="social-section">
+            <h2 class="social-title">ติดต่อผมได้ครับ อิอิ</h2>
+            <div class="social-icons">
+                <a href="https://www.facebook.com/PeamPeam123/" target="_blank" class="icon-link">
+                    <div class="icon-circle facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </div>
+                    <span class="icon-name">Facebook</span>
+                </a>
+                <a href="https://www.instagram.com/peammairu/" target="_blank" class="icon-link">
+                    <div class="icon-circle instagram">
+                        <i class="fab fa-instagram"></i>
+                    </div>
+                    <span class="icon-name">Instagram</span>
+                </a>
+                <a href="https://discord.gg/y5z9tbmb9W" target="_blank" class="icon-link">
+                    <div class="icon-circle discord">
+                        <i class="fab fa-discord"></i>
+                    </div>
+                    <span class="icon-name">Discord</span>
+                </a>
+                <a href="https://steamcommunity.com/profiles/76561199157748183/" target="_blank" class="icon-link">
+                    <div class="icon-circle steam">
+                        <i class="fab fa-steam"></i>
+                    </div>
+                    <span class="icon-name">Steam</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- ส่วนตัวเล่นเพลง -->
+        <div class="music-section">
+            <h2 class="music-title">เพลงโปรดของฉัน</h2>
+            <div class="music-player">
+                <div class="music-info">
+                    <img src="https://i.ytimg.com/vi/3x3KtuJYchw/hqdefault.jpg?sqp=-oaymwEmCKgBEF5IWvKriqkDGQgBFQAAiEIYAdgBAeIBCggYEAIYBjgBQAE=&rs=AOn4CLAfRg8EoZbAY_3MxzQCihZd7nBZIA" alt="อัลบั้ม" class="album-cover" id="albumCover">
+                    <div class="track-info">
+                        <h3 id="songTitle">เเรือเล็กควรออกจากฝั่ - G27Fest</h3>
+                        <p id="artistInfo">G27Fest 「G27 Genie Record」 • 5:10</p>
+                    </div>
+                </div>
+                
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="time-info">
+                    <span id="currentTime">0:00</span>
+                    <span id="totalTime">4:41</span>
+                </div>
+                
+                <div class="controls">
+                    <button class="control-btn" id="prevBtn">
+                        <i class="fas fa-step-backward"></i>
+                    </button>
+                    <button class="control-btn play-btn" id="playBtn">
+                        <i class="fas fa-play" id="playIcon"></i>
+                    </button>
+                    <button class="control-btn" id="nextBtn">
+                        <i class="fas fa-step-forward"></i>
+                    </button>
+                </div>
+                
+                <div class="volume-control">
+                    <i class="fas fa-volume-down"></i>
+                    <input type="range" min="0" max="100" value="70" class="volume-slider" id="volumeSlider">
+                    <i class="fas fa-volume-up"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- ฟุตเตอร์ -->
+        <div class="footer">
+            <p>© 2026 Peravit Kirirat & deepseek All rights reserved.</p>
+            <p>ออกแบบและพัฒนาโดย PERAVI</p>
+            <p style="font-size: 0.8rem; margin-top: 5px; color: #666;">
+               หมายเหตุ: เพลงนี้เป็นเพลงจากยูทูป
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // สร้างเอฟเฟกต์พื้นหลัง
+        function createBackgroundEffects() {
+            const bgEffects = document.getElementById('bgEffects');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('bg-particle');
+                
+                // สุ่มขนาดและตำแหน่ง
+                const size = Math.random() * 100 + 10;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                const opacity = Math.random() * 0.1 + 0.05;
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${posX}%`;
+                particle.style.top = `${posY}%`;
+                particle.style.opacity = opacity;
+                
+                // สุ่มความเร็วในการเคลื่อนไหว
+                const duration = Math.random() * 30 + 20;
+                particle.style.animation = `float ${duration}s infinite linear`;
+                
+                bgEffects.appendChild(particle);
+            }
+            
+            // เพิ่ม animation สำหรับการลอย
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes float {
+                    0% {
+                        transform: translate(0, 0) rotate(0deg);
+                    }
+                    25% {
+                        transform: translate(${Math.random() * 50 - 25}px, ${Math.random() * 50 - 25}px) rotate(90deg);
+                    }
+                    50% {
+                        transform: translate(${Math.random() * 50 - 25}px, ${Math.random() * 50 - 25}px) rotate(180deg);
+                    }
+                    75% {
+                        transform: translate(${Math.random() * 50 - 25}px, ${Math.random() * 50 - 25}px) rotate(270deg);
+                    }
+                    100% {
+                        transform: translate(0, 0) rotate(360deg);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // ระบบสลับหน้า
+        const pageFlipBtn = document.getElementById('pageFlipBtn');
+        const flipper = document.getElementById('flipper');
+        const additionalPage = document.getElementById('additionalPage');
+        const closePageBtn = document.getElementById('closePageBtn');
+        let isAdditionalPageOpen = false;
+
+        // เปิด/ปิดหน้าเพิ่มเติม
+        function toggleAdditionalPage() {
+            if (isAdditionalPageOpen) {
+                // ปิดหน้าเพิ่มเติม
+                additionalPage.classList.remove('active');
+                document.body.classList.remove('page-open');
+                
+                // พลิกปุ่มกลับ
+                setTimeout(() => {
+                    flipper.classList.remove('flipped');
+                }, 300);
+            } else {
+                // เปิดหน้าเพิ่มเติม
+                additionalPage.classList.add('active');
+                document.body.classList.add('page-open');
+                
+                // พลิกปุ่ม
+                flipper.classList.add('flipped');
+            }
+            
+            isAdditionalPageOpen = !isAdditionalPageOpen;
+        }
+
+        // Audio Player
+        const audioPlayer = document.getElementById('audioPlayer');
+        const playBtn = document.getElementById('playBtn');
+        const playIcon = document.getElementById('playIcon');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progressBar');
+        const progressContainer = document.getElementById('progressContainer');
+        const currentTimeEl = document.getElementById('currentTime');
+        const totalTimeEl = document.getElementById('totalTime');
+        const volumeSlider = document.getElementById('volumeSlider');
+        
+        // รายการเพลง
+        const songs = [
+            {
+                title: "ปากดี x ใจเรายังตรงกันอยู่ในม x ใจน้อย x หัวว",
+                artist: "PACK4 「Medley G27」",
+                duration: "4:41",
+                src: "Media1.mp3",
+                cover: "P.jpg"
+            }
+        ];
+        
+        let currentSongIndex = 0;
+        let isPlaying = false;
+        let updateInterval;
+        
+        // โหลดเพลงแรก
+        loadSong(currentSongIndex);
+        
+        // โหลดเพลง
+        function loadSong(index) {
+            const song = songs[index];
+            audioPlayer.src = song.src;
+            
+            // อัปเดตข้อมูลเพลง
+            document.getElementById('songTitle').textContent = song.title;
+            document.getElementById('artistInfo').textContent = `${song.artist} • ${song.duration}`;
+            document.getElementById('albumCover').src = song.cover;
+            document.getElementById('totalTime').textContent = song.duration;
+            
+            // รีเซ็ต progress bar
+            progressBar.style.width = '0%';
+            currentTimeEl.textContent = '0:00';
+            
+            // รอจนโหลดเมตาดาทา
+            audioPlayer.addEventListener('loadedmetadata', function() {
+                totalTimeEl.textContent = formatTime(audioPlayer.duration);
+            });
+        }
+        
+        // เล่น/หยุดเพลง
+        function togglePlay() {
+            if (isPlaying) {
+                pauseSong();
+            } else {
+                playSong();
+            }
+        }
+        
+        // เล่นเพลง
+        function playSong() {
+            isPlaying = true;
+            audioPlayer.play();
+            playIcon.classList.remove('fa-play');
+            playIcon.classList.add('fa-pause');
+            startProgressUpdate();
+        }
+        
+        // หยุดเพลง
+        function pauseSong() {
+            isPlaying = false;
+            audioPlayer.pause();
+            playIcon.classList.remove('fa-pause');
+            playIcon.classList.add('fa-play');
+            stopProgressUpdate();
+        }
+        
+        // เพลงก่อนหน้า
+        function prevSong() {
+            currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+            loadSong(currentSongIndex);
+            if (isPlaying) {
+                playSong();
+            }
+        }
+        
+        // เพลงถัดไป
+        function nextSong() {
+            currentSongIndex = (currentSongIndex + 1) % songs.length;
+            loadSong(currentSongIndex);
+            if (isPlaying) {
+                playSong();
+            }
+        }
+        
+        // อัปเดต progress bar
+        function startProgressUpdate() {
+            stopProgressUpdate();
+            updateInterval = setInterval(updateProgress, 500);
+        }
+        
+        function stopProgressUpdate() {
+            if (updateInterval) {
+                clearInterval(updateInterval);
+            }
+        }
+        
+        function updateProgress() {
+            if (audioPlayer.duration) {
+                const progressPercent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+                progressBar.style.width = `${progressPercent}%`;
+                
+                currentTimeEl.textContent = formatTime(audioPlayer.currentTime);
+            }
+        }
+        
+        // ตั้งค่าเวลาใน progress bar เมื่อคลิก
+        function setProgress(e) {
+            const width = this.clientWidth;
+            const clickX = e.offsetX;
+            const duration = audioPlayer.duration;
+            
+            if (duration) {
+                audioPlayer.currentTime = (clickX / width) * duration;
+            }
+        }
+        
+        // แปลงเวลาเป็นรูปแบบ นาที:วินาที
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+        
+        // ตั้งค่าระดับเสียง
+        function setVolume() {
+            audioPlayer.volume = this.value / 1500;
+        }
+        
+        // เมื่อเพลงจบ
+        audioPlayer.addEventListener('ended', function() {
+            nextSong();
+        });
+        
+        // เมื่อโหลดเพลงเสร็จ
+        audioPlayer.addEventListener('loadedmetadata', function() {
+            totalTimeEl.textContent = formatTime(audioPlayer.duration);
+        });
+        
+        // เมื่อเวลาเพลงเปลี่ยน
+        audioPlayer.addEventListener('timeupdate', function() {
+            if (!isNaN(audioPlayer.duration)) {
+                const progressPercent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+                progressBar.style.width = `${progressPercent}%`;
+                currentTimeEl.textContent = formatTime(audioPlayer.currentTime);
+            }
+        });
+        
+        // เริ่มต้น
+        document.addEventListener('DOMContentLoaded', () => {
+            createBackgroundEffects();
+            
+            // ตั้งค่าปุ่มสลับหน้า
+            pageFlipBtn.addEventListener('click', toggleAdditionalPage);
+            closePageBtn.addEventListener('click', toggleAdditionalPage);
+            
+            // เพิ่มเอฟเฟกต์ hover ให้ไอคอน
+            const iconLinks = document.querySelectorAll('.icon-link');
+            iconLinks.forEach(link => {
+                link.addEventListener('mouseenter', function() {
+                    const icon = this.querySelector('.icon-circle');
+                    icon.style.transform = 'scale(1.1)';
+                });
+                
+                link.addEventListener('mouseleave', function() {
+                    const icon = this.querySelector('.icon-circle');
+                    icon.style.transform = 'scale(1)';
+                });
+            });
+            
+            // ตั้งค่า event listeners
+            playBtn.addEventListener('click', togglePlay);
+            prevBtn.addEventListener('click', prevSong);
+            nextBtn.addEventListener('click', nextSong);
+            progressContainer.addEventListener('click', setProgress);
+            volumeSlider.addEventListener('input', setVolume);
+            
+            // ตั้งค่าระดับเสียงเริ่มต้น
+            audioPlayer.volume = volumeSlider.value / 1500;
+            
+            // เพิ่มเอฟเฟกต์ hover ให้ปุ่มพลิก
+            pageFlipBtn.addEventListener('mouseenter', function() {
+                if (!isAdditionalPageOpen) {
+                    setTimeout(() => {
+                        flipper.classList.add('flipped');
+                    }, 100);
+                }
+            });
+            
+            pageFlipBtn.addEventListener('mouseleave', function() {
+                if (!isAdditionalPageOpen) {
+                    setTimeout(() => {
+                        flipper.classList.remove('flipped');
+                    }, 100);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
