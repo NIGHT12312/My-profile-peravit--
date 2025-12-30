@@ -982,7 +982,7 @@
         
         // ตั้งค่าระดับเสียง
         function setVolume() {
-            audioPlayer.volume = this.value / 1500;
+            audioPlayer.volume = this.value / 1000;
         }
         
         // เมื่อเพลงจบ
@@ -1034,7 +1034,7 @@
             volumeSlider.addEventListener('input', setVolume);
             
             // ตั้งค่าระดับเสียงเริ่มต้น
-            audioPlayer.volume = volumeSlider.value / 1500;
+            audioPlayer.volume = volumeSlider.value / 1000;
             
             // เพิ่มเอฟเฟกต์ hover ให้ปุ่มพลิก
             pageFlipBtn.addEventListener('mouseenter', function() {
